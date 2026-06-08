@@ -51,6 +51,54 @@
       }
       .skeleton .spinner { border-color: rgba(0,0,0,0.15); border-top-color: #2563eb; }
       .skeleton.err { color: #991b1b; background: #fee2e2; border-color: #fca5a5; padding: 12px; text-align: center; }
+      .item img { cursor: zoom-in; transition: transform 0.15s; }
+      .item img:hover { transform: scale(1.02); }
+      .lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        cursor: zoom-out;
+        padding: 24px;
+      }
+      .lightbox img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      }
+      .lightbox .close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .lightbox .close:hover { background: rgba(255,255,255,0.25); }
+      .lightbox .info {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #cbd5e1;
+        font-size: 12px;
+        background: rgba(0,0,0,0.5);
+        padding: 6px 12px;
+        border-radius: 20px;
+      }
       .tips {
         margin-top: 16px;
         background: #fefce8;
@@ -343,6 +391,30 @@
       $("generate").addEventListener("click", generate);
       $("prompt").addEventListener("keydown", (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "Enter") generate();
+      });
+
+      // Lightbox: click ảnh → mở fullscreen
+      function openLightbox(src) {
+        const box = document.createElement("div");
+        box.className = "lightbox";
+        box.innerHTML = `
+          <button class="close" aria-label="Đóng">✕</button>
+          <img src="${src}" alt="fullscreen" />
+          <div class="info">Click bất kỳ đâu hoặc Esc để đóng</div>
+        `;
+        const close = () => {
+          box.remove();
+          document.removeEventListener("keydown", onKey);
+        };
+        const onKey = (e) => { if (e.key === "Escape") close(); };
+        box.addEventListener("click", close);
+        document.addEventListener("keydown", onKey);
+        document.body.appendChild(box);
+      }
+
+      document.addEventListener("click", (e) => {
+        const img = e.target.closest(".item img");
+        if (img) openLightbox(img.src);
       });
     </script>
   </body>
