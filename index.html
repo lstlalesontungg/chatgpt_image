@@ -37,6 +37,20 @@
       .row3 { display: grid; grid-template-columns: 1.2fr 1.2fr 0.6fr; gap: 12px; }
       .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
       .item { display: flex; flex-direction: column; gap: 8px; }
+      .skeleton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 200px;
+        background: #f1f5f9;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        color: #64748b;
+        font-size: 13px;
+      }
+      .skeleton .spinner { border-color: rgba(0,0,0,0.15); border-top-color: #2563eb; }
+      .skeleton.err { color: #991b1b; background: #fee2e2; border-color: #fca5a5; padding: 12px; text-align: center; }
       .tips {
         margin-top: 16px;
         background: #fefce8;
@@ -226,14 +240,26 @@
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner"></span>Đang tạo...';
 
-        try {
-          const quality = $("quality").value;
-          const body = {
-            model,
-            prompt,
-            n,
-            size: size === "auto" && !isGptImage ? "1024x1024" : size,
-          };
+        const ts = Date.now();
+        const grid = document.createElement("div");
+        grid.className = "grid";
+        result.appendChild(grid);
+
+        // Tạo skeleton trước, đổ ảnh khi mỗi request về
+        const slots = [];
+        for (let i = 0; i < n; i++) {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.innerHTML = `<div class="skeleton"><span class="spinner"></span> Ảnh ${i + 1}...</div>`;
+          grid.appendChild(div);
+          slots.push(div);
+        }
+
+        const quality = $("quality").value;
+        const finalSize = size === "auto" && !isGptImage ? "1024x1024" : size;
+
+        async function callOne(idx) {
+          const body = { model, prompt, n: 1, size: finalSize };
           if (isGptImage) {
             body.quality = quality;
           } else if (model === "dall-e-3") {
@@ -242,7 +268,6 @@
           } else {
             body.response_format = "b64_json";
           }
-
           const res = await fetch("https://api.openai.com/v1/images/generations", {
             method: "POST",
             headers: {
@@ -251,28 +276,33 @@
             },
             body: JSON.stringify(body),
           });
-
           const data = await res.json();
           if (!res.ok) throw new Error(data.error?.message || JSON.stringify(data));
+          const item = data.data[0];
+          const src = item.b64_json
+            ? "data:image/png;base64," + item.b64_json
+            : item.url;
+          slots[idx].innerHTML = `
+            <img src="${src}" alt="generated-${idx}" />
+            <a class="download" href="${src}" download="openai-${ts}-${idx + 1}.png">⬇ Tải ảnh ${idx + 1}</a>
+          `;
+        }
 
-          const ts = Date.now();
-          const grid = document.createElement("div");
-          grid.className = "grid";
-          data.data.forEach((item, i) => {
-            const src = item.b64_json
-              ? "data:image/png;base64," + item.b64_json
-              : item.url;
-            const div = document.createElement("div");
-            div.className = "item";
-            div.innerHTML = `
-              <img src="${src}" alt="generated-${i}" />
-              <a class="download" href="${src}" download="openai-${ts}-${i + 1}.png">⬇ Tải ảnh ${i + 1}</a>
-            `;
-            grid.appendChild(div);
-          });
-          result.appendChild(grid);
-        } catch (e) {
-          showError(e.message || String(e));
+        try {
+          const results = await Promise.allSettled(
+            Array.from({ length: n }, (_, i) => callOne(i))
+          );
+          const errs = results
+            .filter((r) => r.status === "rejected")
+            .map((r) => r.reason.message);
+          if (errs.length) {
+            showError(`${errs.length}/${n} ảnh fail:\n` + errs.join("\n"));
+            results.forEach((r, i) => {
+              if (r.status === "rejected") {
+                slots[i].innerHTML = `<div class="skeleton err">❌ ${r.reason.message}</div>`;
+              }
+            });
+          }
         } finally {
           btn.disabled = false;
           btn.textContent = "Tạo ảnh";
