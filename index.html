@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenAI Image Generator</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 24px;
+        background: #f8fafc;
+        color: #0f172a;
+        min-height: 100vh;
+      }
+      h1 { font-size: 22px; margin: 0 0 16px; }
+      label { display: block; font-size: 13px; margin: 12px 0 4px; color: #475569; }
+      input, select, textarea, button {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f172a;
+        font-family: inherit;
+      }
+      input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+      textarea { min-height: 96px; resize: vertical; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .row3 { display: grid; grid-template-columns: 1.2fr 1.2fr 0.6fr; gap: 12px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+      .item { display: flex; flex-direction: column; gap: 8px; }
+      .tips {
+        margin-top: 16px;
+        background: #fefce8;
+        border: 1px solid #fde68a;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 13px;
+        color: #422006;
+      }
+      .tips summary { cursor: pointer; font-weight: 600; color: #b45309; }
+      .tips ul { margin: 10px 0 4px; padding-left: 20px; line-height: 1.6; }
+      .tips code { background: #fef3c7; padding: 1px 6px; border-radius: 4px; font-size: 12px; color: #78350f; }
+      input[readonly] { background: #f1f5f9; color: #b45309; font-weight: 600; border-color: #e2e8f0; }
+      button {
+        margin-top: 16px;
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button:hover { background: #1d4ed8; }
+      button:disabled { opacity: 0.5; cursor: not-allowed; }
+      .result { margin-top: 24px; }
+      .result img {
+        width: 100%;
+        border-radius: 12px;
+        display: block;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+      }
+      .download {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 8px 16px;
+        background: #10b981;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .download:hover { background: #059669; }
+      .error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 16px;
+        font-size: 13px;
+        white-space: pre-wrap;
+      }
+      .hint { font-size: 12px; color: #64748b; margin-top: 4px; }
+      .save-key { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px; color: #475569; }
+      .save-key input { width: auto; }
+      .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <h1>OpenAI Image Generator</h1>
+
+    <label for="apiKey">OpenAI API Key</label>
+    <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" />
+    <div class="save-key">
+      <input id="saveKey" type="checkbox" />
+      <label for="saveKey" style="margin:0">Lưu key trong trình duyệt (localStorage)</label>
+    </div>
+
+    <div class="row3">
+      <div>
+        <label for="model">Model</label>
+        <select id="model">
+          <option value="gpt-image-2">gpt-image-2</option>
+          <option value="gpt-image-1">gpt-image-1</option>
+          <option value="dall-e-3">dall-e-3</option>
+          <option value="dall-e-2">dall-e-2</option>
+        </select>
+      </div>
+      <div>
+        <label for="size">Kích thước</label>
+        <select id="size">
+          <option value="1024x1024">1024x1024</option>
+          <option value="1024x1536">1024x1536 (dọc)</option>
+          <option value="1536x1024">1536x1024 (ngang)</option>
+          <option value="auto">auto</option>
+        </select>
+      </div>
+      <div>
+        <label for="count">Số lượng</label>
+        <input id="count" type="number" min="1" max="10" value="1" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="quality">Quality (chi phí)</label>
+        <select id="quality">
+          <option value="low">low — rẻ nhất</option>
+          <option value="medium" selected>medium</option>
+          <option value="high">high</option>
+          <option value="auto">auto</option>
+        </select>
+      </div>
+      <div>
+        <label for="costEst">Ước tính chi phí</label>
+        <input id="costEst" type="text" readonly value="—" />
+      </div>
+    </div>
+
+    <details class="tips">
+      <summary>💡 Mẹo tiết kiệm token</summary>
+      <ul>
+        <li><b>Model</b>: <code>dall-e-2</code> rẻ nhất (~$0.02/ảnh 1024). <code>gpt-image-1/2 low</code> ~$0.011. <code>dall-e-3 hd</code> + <code>gpt-image high</code> đắt 5–15×.</li>
+        <li><b>Quality</b>: chọn <code>low</code> khi test prompt, đổi <code>high</code> khi đã ưng prompt.</li>
+        <li><b>Kích thước</b>: nhỏ hơn = rẻ hơn. <code>1024x1024</code> rẻ nhất cho hình vuông.</li>
+        <li><b>Số lượng</b>: gen <code>n=1</code> để test prompt, scale sau.</li>
+        <li><b>Prompt</b>: viết gọn, rõ. Prompt dài KHÔNG làm ảnh đắt hơn, nhưng dài lê thê → AI hiểu lệch → phải gen lại = tốn gấp đôi.</li>
+        <li><b>Bỏ "auto" size</b> cho gpt-image — auto thường chọn high → đắt.</li>
+        <li><b>Cache prompt tốt</b>: khi ra ảnh ưng ý, lưu lại prompt + seed (nếu có) để khỏi gen lại lần sau.</li>
+      </ul>
+    </details>
+
+    <label for="prompt">Prompt</label>
+    <textarea id="prompt" placeholder="Mô tả ảnh muốn tạo..."></textarea>
+
+    <button id="generate">Tạo ảnh</button>
+
+    <div id="error" class="error" style="display:none"></div>
+    <div id="result" class="result"></div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const KEY_STORAGE = "openai_api_key";
+
+      const savedKey = localStorage.getItem(KEY_STORAGE);
+      if (savedKey) {
+        $("apiKey").value = savedKey;
+        $("saveKey").checked = true;
+      }
+
+      $("saveKey").addEventListener("change", (e) => {
+        if (e.target.checked && $("apiKey").value) {
+          localStorage.setItem(KEY_STORAGE, $("apiKey").value);
+        } else {
+          localStorage.removeItem(KEY_STORAGE);
+        }
+      });
+
+      $("apiKey").addEventListener("input", () => {
+        if ($("saveKey").checked) {
+          localStorage.setItem(KEY_STORAGE, $("apiKey").value);
+        }
+      });
+
+      async function generate() {
+        const key = $("apiKey").value.trim();
+        const prompt = $("prompt").value.trim();
+        const model = $("model").value;
+        const size = $("size").value;
+        let n = parseInt($("count").value, 10) || 1;
+        const btn = $("generate");
+        const errBox = $("error");
+        const result = $("result");
+
+        errBox.style.display = "none";
+        result.innerHTML = "";
+
+        if (!key) return showError("Thiếu API key");
+        if (!prompt) return showError("Thiếu prompt");
+
+        if (model === "dall-e-3") n = 1; // dall-e-3 chỉ hỗ trợ n=1
+        n = Math.min(Math.max(n, 1), 10);
+
+        const isGptImage = model.startsWith("gpt-image-");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span>Đang tạo...';
+
+        try {
+          const quality = $("quality").value;
+          const body = {
+            model,
+            prompt,
+            n,
+            size: size === "auto" && !isGptImage ? "1024x1024" : size,
+          };
+          if (isGptImage) {
+            body.quality = quality;
+          } else if (model === "dall-e-3") {
+            body.quality = quality === "high" ? "hd" : "standard";
+            body.response_format = "b64_json";
+          } else {
+            body.response_format = "b64_json";
+          }
+
+          const res = await fetch("https://api.openai.com/v1/images/generations", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + key,
+            },
+            body: JSON.stringify(body),
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error?.message || JSON.stringify(data));
+
+          const ts = Date.now();
+          const grid = document.createElement("div");
+          grid.className = "grid";
+          data.data.forEach((item, i) => {
+            const src = item.b64_json
+              ? "data:image/png;base64," + item.b64_json
+              : item.url;
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerHTML = `
+              <img src="${src}" alt="generated-${i}" />
+              <a class="download" href="${src}" download="openai-${ts}-${i + 1}.png">⬇ Tải ảnh ${i + 1}</a>
+            `;
+            grid.appendChild(div);
+          });
+          result.appendChild(grid);
+        } catch (e) {
+          showError(e.message || String(e));
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Tạo ảnh";
+        }
+      }
+
+      function showError(msg) {
+        const e = $("error");
+        e.textContent = msg;
+        e.style.display = "block";
+      }
+
+      // Bảng giá ước tính (USD/ảnh) — cập nhật 2026
+      const PRICE = {
+        "gpt-image-2": { low: 0.011, medium: 0.042, high: 0.167, auto: 0.042 },
+        "gpt-image-1": { low: 0.011, medium: 0.042, high: 0.167, auto: 0.042 },
+        "dall-e-3":    { low: 0.04,  medium: 0.04,  high: 0.08,  auto: 0.04  },
+        "dall-e-2":    { low: 0.02,  medium: 0.02,  high: 0.02,  auto: 0.02  },
+      };
+
+      function updateCost() {
+        const m = $("model").value;
+        const q = $("quality").value;
+        let n = parseInt($("count").value, 10) || 1;
+        if (m === "dall-e-3") n = 1;
+        n = Math.min(Math.max(n, 1), 10);
+        const unit = (PRICE[m] || {})[q] ?? 0;
+        const total = unit * n;
+        $("costEst").value = `~$${total.toFixed(3)} (${n} × $${unit.toFixed(3)})`;
+      }
+
+      ["model", "quality", "count"].forEach((id) =>
+        $(id).addEventListener("change", updateCost)
+      );
+      $("count").addEventListener("input", updateCost);
+      updateCost();
+
+      $("generate").addEventListener("click", generate);
+      $("prompt").addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") generate();
+      });
+    </script>
+  </body>
+</html>
