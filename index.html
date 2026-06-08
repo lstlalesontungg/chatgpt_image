@@ -8,7 +8,7 @@
       * { box-sizing: border-box; }
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        max-width: 720px;
+        max-width: 1280px;
         margin: 0 auto;
         padding: 24px;
         background: #f8fafc;
@@ -16,12 +16,12 @@
         min-height: 100vh;
       }
       h1 { font-size: 22px; margin: 0 0 16px; }
-      label { display: block; font-size: 13px; margin: 12px 0 4px; color: #475569; }
+      label { display: block; font-size: 12px; margin: 8px 0 4px; color: #475569; font-weight: 500; }
       input, select, textarea, button {
         width: 100%;
-        padding: 10px 12px;
-        font-size: 14px;
-        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 13px;
+        border-radius: 6px;
         border: 1px solid #cbd5e1;
         background: #ffffff;
         color: #0f172a;
@@ -32,27 +32,180 @@
         border-color: #2563eb;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
       }
-      textarea { min-height: 96px; resize: vertical; }
-      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      .row3 { display: grid; grid-template-columns: 1.2fr 1.2fr 0.6fr; gap: 12px; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-      .item { display: flex; flex-direction: column; gap: 8px; }
+      textarea { min-height: 120px; resize: vertical; }
+      button {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button:hover { background: #1d4ed8; }
+      button:disabled { opacity: 0.5; cursor: not-allowed; }
+      button.ghost {
+        background: #fff;
+        color: #2563eb;
+        border-color: #cbd5e1;
+      }
+      button.ghost:hover { background: #f1f5f9; }
+      button.danger {
+        background: transparent;
+        color: #dc2626;
+        border-color: #fca5a5;
+        width: auto;
+        padding: 4px 10px;
+        font-size: 12px;
+      }
+      button.danger:hover { background: #fee2e2; }
+      button.icon {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+
+      /* Header */
+      .header {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        position: sticky;
+        top: 16px;
+        z-index: 50;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      }
+      .header-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 12px;
+        align-items: end;
+      }
+      .save-key { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 4px; color: #475569; }
+      .save-key input { width: auto; }
+
+      /* Toolbar */
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .toolbar button { width: auto; padding: 10px 18px; }
+
+      /* Cells */
+      .cells {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .cell {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      }
+      .cell-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #e2e8f0;
+      }
+      .cell-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: #0f172a;
+      }
+      .cell-body {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 720px) {
+        .cell-body { grid-template-columns: 1fr; }
+      }
+      .cell-settings { display: flex; flex-direction: column; }
+      .cell-right { display: flex; flex-direction: column; }
+      .cell-right button.run { margin-top: 8px; width: auto; align-self: flex-start; padding: 8px 18px; }
+      .cost-line {
+        font-size: 11px;
+        color: #b45309;
+        font-weight: 600;
+        margin-top: 6px;
+      }
+
+      /* Result grid */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .item { display: flex; flex-direction: column; gap: 6px; }
+      .item img {
+        width: 100%;
+        border-radius: 8px;
+        display: block;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        cursor: zoom-in;
+        transition: transform 0.15s;
+      }
+      .item img:hover { transform: scale(1.02); }
+      .download {
+        display: inline-block;
+        padding: 4px 8px;
+        background: #10b981;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+      }
+      .download:hover { background: #059669; }
       .skeleton {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        min-height: 200px;
+        gap: 6px;
+        min-height: 140px;
         background: #f1f5f9;
         border: 1px dashed #cbd5e1;
-        border-radius: 12px;
+        border-radius: 8px;
         color: #64748b;
-        font-size: 13px;
+        font-size: 12px;
       }
-      .skeleton .spinner { border-color: rgba(0,0,0,0.15); border-top-color: #2563eb; }
-      .skeleton.err { color: #991b1b; background: #fee2e2; border-color: #fca5a5; padding: 12px; text-align: center; }
-      .item img { cursor: zoom-in; transition: transform 0.15s; }
-      .item img:hover { transform: scale(1.02); }
+      .skeleton.err { color: #991b1b; background: #fee2e2; border-color: #fca5a5; padding: 10px; text-align: center; font-size: 11px; }
+      .spinner {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border: 2px solid rgba(0,0,0,0.15);
+        border-top-color: #2563eb;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      .cell-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 10px;
+        font-size: 12px;
+        white-space: pre-wrap;
+      }
+
+      /* Lightbox */
       .lightbox {
         position: fixed;
         inset: 0;
@@ -69,7 +222,6 @@
         max-height: 100%;
         object-fit: contain;
         border-radius: 8px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
       }
       .lightbox .close {
         position: absolute;
@@ -83,22 +235,10 @@
         border: none;
         font-size: 22px;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
       }
       .lightbox .close:hover { background: rgba(255,255,255,0.25); }
-      .lightbox .info {
-        position: absolute;
-        bottom: 16px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: #cbd5e1;
-        font-size: 12px;
-        background: rgba(0,0,0,0.5);
-        padding: 6px 12px;
-        border-radius: 20px;
-      }
+
+      /* Tips */
       .tips {
         margin-top: 16px;
         background: #fefce8;
@@ -111,146 +251,55 @@
       .tips summary { cursor: pointer; font-weight: 600; color: #b45309; }
       .tips ul { margin: 10px 0 4px; padding-left: 20px; line-height: 1.6; }
       .tips code { background: #fef3c7; padding: 1px 6px; border-radius: 4px; font-size: 12px; color: #78350f; }
-      input[readonly] { background: #f1f5f9; color: #b45309; font-weight: 600; border-color: #e2e8f0; }
-      button {
-        margin-top: 16px;
-        background: #2563eb;
-        border-color: #2563eb;
-        color: #fff;
-        cursor: pointer;
-        font-weight: 600;
-      }
-      button:hover { background: #1d4ed8; }
-      button:disabled { opacity: 0.5; cursor: not-allowed; }
-      .result { margin-top: 24px; }
-      .result img {
-        width: 100%;
-        border-radius: 12px;
-        display: block;
-        background: #f1f5f9;
-        border: 1px solid #e2e8f0;
-      }
-      .download {
-        display: inline-block;
-        margin-top: 12px;
-        padding: 8px 16px;
-        background: #10b981;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-      }
-      .download:hover { background: #059669; }
-      .error {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #fca5a5;
-        padding: 12px;
-        border-radius: 8px;
-        margin-top: 16px;
-        font-size: 13px;
-        white-space: pre-wrap;
-      }
-      .hint { font-size: 12px; color: #64748b; margin-top: 4px; }
-      .save-key { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px; color: #475569; }
-      .save-key input { width: auto; }
-      .spinner {
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        border: 2px solid rgba(255,255,255,0.4);
-        border-top-color: #ffffff;
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-        vertical-align: middle;
-        margin-right: 6px;
-      }
-      @keyframes spin { to { transform: rotate(360deg); } }
     </style>
   </head>
   <body>
     <h1>OpenAI Image Generator</h1>
 
-    <label for="apiKey">OpenAI API Key</label>
-    <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" />
-    <div class="save-key">
-      <input id="saveKey" type="checkbox" />
-      <label for="saveKey" style="margin:0">Lưu key trong trình duyệt (localStorage)</label>
-    </div>
-
-    <div class="row3">
-      <div>
-        <label for="model">Model</label>
-        <select id="model">
-          <option value="gpt-image-2">gpt-image-2</option>
-          <option value="gpt-image-1">gpt-image-1</option>
-          <option value="dall-e-3">dall-e-3</option>
-          <option value="dall-e-2">dall-e-2</option>
-        </select>
-      </div>
-      <div>
-        <label for="size">Kích thước</label>
-        <select id="size">
-          <option value="1024x1024">1024x1024</option>
-          <option value="1024x1536">1024x1536 (dọc)</option>
-          <option value="1536x1024">1536x1024 (ngang)</option>
-          <option value="auto">auto</option>
-        </select>
-      </div>
-      <div>
-        <label for="count">Số lượng</label>
-        <input id="count" type="number" min="1" max="10" value="1" />
+    <!-- Header: API key dùng chung -->
+    <div class="header">
+      <div class="header-row">
+        <div>
+          <label for="apiKey">OpenAI API Key</label>
+          <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" />
+          <div class="save-key">
+            <input id="saveKey" type="checkbox" />
+            <label for="saveKey" style="margin:0">Lưu key trong trình duyệt</label>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="row">
-      <div>
-        <label for="quality">Quality (chi phí)</label>
-        <select id="quality">
-          <option value="low">low — rẻ nhất</option>
-          <option value="medium" selected>medium</option>
-          <option value="high">high</option>
-          <option value="auto">auto</option>
-        </select>
-      </div>
-      <div>
-        <label for="costEst">Ước tính chi phí</label>
-        <input id="costEst" type="text" readonly value="—" />
-      </div>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <button id="runAll">▶ Tạo tất cả</button>
+      <button id="addCell" class="ghost">+ Thêm prompt</button>
     </div>
+
+    <!-- Cells container -->
+    <div id="cells" class="cells"></div>
 
     <details class="tips">
       <summary>💡 Mẹo tiết kiệm token</summary>
       <ul>
-        <li><b>Model</b>: <code>dall-e-2</code> rẻ nhất (~$0.02/ảnh 1024). <code>gpt-image-1/2 low</code> ~$0.011. <code>dall-e-3 hd</code> + <code>gpt-image high</code> đắt 5–15×.</li>
-        <li><b>Quality</b>: chọn <code>low</code> khi test prompt, đổi <code>high</code> khi đã ưng prompt.</li>
-        <li><b>Kích thước</b>: nhỏ hơn = rẻ hơn. <code>1024x1024</code> rẻ nhất cho hình vuông.</li>
-        <li><b>Số lượng</b>: gen <code>n=1</code> để test prompt, scale sau.</li>
-        <li><b>Prompt</b>: viết gọn, rõ. Prompt dài KHÔNG làm ảnh đắt hơn, nhưng dài lê thê → AI hiểu lệch → phải gen lại = tốn gấp đôi.</li>
-        <li><b>Bỏ "auto" size</b> cho gpt-image — auto thường chọn high → đắt.</li>
-        <li><b>Cache prompt tốt</b>: khi ra ảnh ưng ý, lưu lại prompt + seed (nếu có) để khỏi gen lại lần sau.</li>
+        <li><b>Model</b>: <code>dall-e-2</code> rẻ nhất (~$0.02/ảnh 1024). <code>gpt-image low</code> ~$0.011. <code>dall-e-3 hd</code> + <code>gpt-image high</code> đắt 5–15×.</li>
+        <li><b>Quality</b>: chọn <code>low</code> khi test, đổi <code>high</code> khi đã ưng.</li>
+        <li><b>Kích thước nhỏ</b> = rẻ + nhanh hơn.</li>
+        <li>Gen <code>n=1</code> để test prompt, scale sau.</li>
+        <li>"Tạo tất cả" chạy mọi cell song song.</li>
       </ul>
     </details>
-
-    <label for="prompt">Prompt</label>
-    <textarea id="prompt" placeholder="Mô tả ảnh muốn tạo..."></textarea>
-
-    <button id="generate">Tạo ảnh</button>
-
-    <div id="error" class="error" style="display:none"></div>
-    <div id="result" class="result"></div>
 
     <script>
       const $ = (id) => document.getElementById(id);
       const KEY_STORAGE = "openai_api_key";
 
+      // Khôi phục key
       const savedKey = localStorage.getItem(KEY_STORAGE);
       if (savedKey) {
         $("apiKey").value = savedKey;
         $("saveKey").checked = true;
       }
-
       $("saveKey").addEventListener("change", (e) => {
         if (e.target.checked && $("apiKey").value) {
           localStorage.setItem(KEY_STORAGE, $("apiKey").value);
@@ -258,53 +307,143 @@
           localStorage.removeItem(KEY_STORAGE);
         }
       });
-
       $("apiKey").addEventListener("input", () => {
         if ($("saveKey").checked) {
           localStorage.setItem(KEY_STORAGE, $("apiKey").value);
         }
       });
 
-      async function generate() {
+      // Bảng giá ước tính (USD/ảnh)
+      const PRICE = {
+        "gpt-image-2": { low: 0.011, medium: 0.042, high: 0.167, auto: 0.042 },
+        "gpt-image-1": { low: 0.011, medium: 0.042, high: 0.167, auto: 0.042 },
+        "dall-e-3":    { low: 0.04,  medium: 0.04,  high: 0.08,  auto: 0.04  },
+        "dall-e-2":    { low: 0.02,  medium: 0.02,  high: 0.02,  auto: 0.02  },
+      };
+
+      let cellCounter = 0;
+      const cellsContainer = $("cells");
+
+      function createCell(initial = {}) {
+        cellCounter++;
+        const id = cellCounter;
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.dataset.id = id;
+        cell.innerHTML = `
+          <div class="cell-head">
+            <div class="cell-title">Prompt #${id}</div>
+            <button class="danger" data-action="delete">🗑 Xoá</button>
+          </div>
+          <div class="cell-body">
+            <div class="cell-settings">
+              <label>Model</label>
+              <select data-f="model">
+                <option value="gpt-image-2">gpt-image-2</option>
+                <option value="gpt-image-1">gpt-image-1</option>
+                <option value="dall-e-3">dall-e-3</option>
+                <option value="dall-e-2">dall-e-2</option>
+              </select>
+
+              <label>Kích thước</label>
+              <select data-f="size">
+                <option value="1024x1024">1024x1024</option>
+                <option value="1024x1536">1024x1536 (dọc)</option>
+                <option value="1536x1024">1536x1024 (ngang)</option>
+                <option value="auto">auto</option>
+              </select>
+
+              <label>Quality</label>
+              <select data-f="quality">
+                <option value="low">low — rẻ</option>
+                <option value="medium" selected>medium</option>
+                <option value="high">high</option>
+                <option value="auto">auto</option>
+              </select>
+
+              <label>Số lượng</label>
+              <input type="number" data-f="count" min="1" max="10" value="1" />
+
+              <div class="cost-line" data-f="cost">~$0.000</div>
+            </div>
+
+            <div class="cell-right">
+              <label>Prompt</label>
+              <textarea data-f="prompt" placeholder="Mô tả ảnh muốn tạo..."></textarea>
+              <button class="run" data-action="run">▶ Tạo</button>
+              <div class="cell-error" data-f="error" style="display:none"></div>
+              <div class="grid" data-f="result"></div>
+            </div>
+          </div>
+        `;
+        cellsContainer.appendChild(cell);
+
+        // Set initial values
+        Object.entries(initial).forEach(([k, v]) => {
+          const el = cell.querySelector(`[data-f="${k}"]`);
+          if (el) el.value = v;
+        });
+
+        // Update cost listener
+        const updateCost = () => {
+          const m = cell.querySelector('[data-f="model"]').value;
+          const q = cell.querySelector('[data-f="quality"]').value;
+          let n = parseInt(cell.querySelector('[data-f="count"]').value, 10) || 1;
+          if (m === "dall-e-3") n = 1;
+          n = Math.min(Math.max(n, 1), 10);
+          const unit = (PRICE[m] || {})[q] ?? 0;
+          const total = unit * n;
+          cell.querySelector('[data-f="cost"]').textContent =
+            `~$${total.toFixed(3)} (${n} × $${unit.toFixed(3)})`;
+        };
+        cell.querySelectorAll("select, input[type=number]").forEach((el) => {
+          el.addEventListener("change", updateCost);
+          el.addEventListener("input", updateCost);
+        });
+        updateCost();
+
+        return cell;
+      }
+
+      async function runCell(cell) {
+        const get = (f) => cell.querySelector(`[data-f="${f}"]`).value;
+        const set = (f, v) => (cell.querySelector(`[data-f="${f}"]`).value = v);
+        const errBox = cell.querySelector('[data-f="error"]');
+        const result = cell.querySelector('[data-f="result"]');
+        const runBtn = cell.querySelector('[data-action="run"]');
+
         const key = $("apiKey").value.trim();
-        const prompt = $("prompt").value.trim();
-        const model = $("model").value;
-        const size = $("size").value;
-        let n = parseInt($("count").value, 10) || 1;
-        const btn = $("generate");
-        const errBox = $("error");
-        const result = $("result");
+        const prompt = get("prompt").trim();
+        const model = get("model");
+        const size = get("size");
+        const quality = get("quality");
+        let n = parseInt(get("count"), 10) || 1;
 
         errBox.style.display = "none";
         result.innerHTML = "";
 
-        if (!key) return showError("Thiếu API key");
-        if (!prompt) return showError("Thiếu prompt");
+        if (!key) return showCellError(cell, "Thiếu API key (nhập ở trên cùng)");
+        if (!prompt) return showCellError(cell, "Thiếu prompt");
 
-        if (model === "dall-e-3") n = 1; // dall-e-3 chỉ hỗ trợ n=1
+        if (model === "dall-e-3") n = 1;
         n = Math.min(Math.max(n, 1), 10);
 
         const isGptImage = model.startsWith("gpt-image-");
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span>Đang tạo...';
-
+        const finalSize = size === "auto" && !isGptImage ? "1024x1024" : size;
         const ts = Date.now();
-        const grid = document.createElement("div");
-        grid.className = "grid";
-        result.appendChild(grid);
 
-        // Tạo skeleton trước, đổ ảnh khi mỗi request về
+        // Skeletons
         const slots = [];
         for (let i = 0; i < n; i++) {
           const div = document.createElement("div");
           div.className = "item";
-          div.innerHTML = `<div class="skeleton"><span class="spinner"></span> Ảnh ${i + 1}...</div>`;
-          grid.appendChild(div);
+          div.innerHTML = `<div class="skeleton"><span class="spinner"></span>#${i + 1}</div>`;
+          result.appendChild(div);
           slots.push(div);
         }
 
-        const quality = $("quality").value;
-        const finalSize = size === "auto" && !isGptImage ? "1024x1024" : size;
+        runBtn.disabled = true;
+        runBtn.textContent = "Đang tạo...";
 
         async function callOne(idx) {
           const body = { model, prompt, n: 1, size: finalSize };
@@ -331,8 +470,8 @@
             ? "data:image/png;base64," + item.b64_json
             : item.url;
           slots[idx].innerHTML = `
-            <img src="${src}" alt="generated-${idx}" />
-            <a class="download" href="${src}" download="openai-${ts}-${idx + 1}.png">⬇ Tải ảnh ${idx + 1}</a>
+            <img src="${src}" alt="img-${idx}" />
+            <a class="download" href="${src}" download="openai-${ts}-${idx + 1}.png">⬇ Tải</a>
           `;
         }
 
@@ -340,67 +479,59 @@
           const results = await Promise.allSettled(
             Array.from({ length: n }, (_, i) => callOne(i))
           );
-          const errs = results
-            .filter((r) => r.status === "rejected")
-            .map((r) => r.reason.message);
+          const errs = [];
+          results.forEach((r, i) => {
+            if (r.status === "rejected") {
+              errs.push(r.reason.message);
+              slots[i].innerHTML = `<div class="skeleton err">❌ ${r.reason.message}</div>`;
+            }
+          });
           if (errs.length) {
-            showError(`${errs.length}/${n} ảnh fail:\n` + errs.join("\n"));
-            results.forEach((r, i) => {
-              if (r.status === "rejected") {
-                slots[i].innerHTML = `<div class="skeleton err">❌ ${r.reason.message}</div>`;
-              }
-            });
+            showCellError(cell, `${errs.length}/${n} ảnh fail:\n` + errs.join("\n"));
           }
         } finally {
-          btn.disabled = false;
-          btn.textContent = "Tạo ảnh";
+          runBtn.disabled = false;
+          runBtn.textContent = "▶ Tạo";
         }
       }
 
-      function showError(msg) {
-        const e = $("error");
+      function showCellError(cell, msg) {
+        const e = cell.querySelector('[data-f="error"]');
         e.textContent = msg;
         e.style.display = "block";
       }
 
-      // Bảng giá ước tính (USD/ảnh) — cập nhật 2026
-      const PRICE = {
-        "gpt-image-2": { low: 0.011, medium: 0.042, high: 0.167, auto: 0.042 },
-        "gpt-image-1": { low: 0.011, medium: 0.042, high: 0.167, auto: 0.042 },
-        "dall-e-3":    { low: 0.04,  medium: 0.04,  high: 0.08,  auto: 0.04  },
-        "dall-e-2":    { low: 0.02,  medium: 0.02,  high: 0.02,  auto: 0.02  },
-      };
-
-      function updateCost() {
-        const m = $("model").value;
-        const q = $("quality").value;
-        let n = parseInt($("count").value, 10) || 1;
-        if (m === "dall-e-3") n = 1;
-        n = Math.min(Math.max(n, 1), 10);
-        const unit = (PRICE[m] || {})[q] ?? 0;
-        const total = unit * n;
-        $("costEst").value = `~$${total.toFixed(3)} (${n} × $${unit.toFixed(3)})`;
-      }
-
-      ["model", "quality", "count"].forEach((id) =>
-        $(id).addEventListener("change", updateCost)
-      );
-      $("count").addEventListener("input", updateCost);
-      updateCost();
-
-      $("generate").addEventListener("click", generate);
-      $("prompt").addEventListener("keydown", (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") generate();
+      // Event delegation
+      cellsContainer.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-action]");
+        if (!btn) return;
+        const cell = btn.closest(".cell");
+        if (!cell) return;
+        const action = btn.dataset.action;
+        if (action === "delete") {
+          if (cellsContainer.children.length <= 1) {
+            alert("Phải có ít nhất 1 prompt");
+            return;
+          }
+          cell.remove();
+        } else if (action === "run") {
+          runCell(cell);
+        }
       });
 
-      // Lightbox: click ảnh → mở fullscreen
+      $("addCell").addEventListener("click", () => createCell());
+      $("runAll").addEventListener("click", () => {
+        const cells = cellsContainer.querySelectorAll(".cell");
+        cells.forEach((c) => runCell(c));
+      });
+
+      // Lightbox
       function openLightbox(src) {
         const box = document.createElement("div");
         box.className = "lightbox";
         box.innerHTML = `
           <button class="close" aria-label="Đóng">✕</button>
           <img src="${src}" alt="fullscreen" />
-          <div class="info">Click bất kỳ đâu hoặc Esc để đóng</div>
         `;
         const close = () => {
           box.remove();
@@ -411,11 +542,13 @@
         document.addEventListener("keydown", onKey);
         document.body.appendChild(box);
       }
-
       document.addEventListener("click", (e) => {
         const img = e.target.closest(".item img");
         if (img) openLightbox(img.src);
       });
+
+      // Cell đầu tiên
+      createCell();
     </script>
   </body>
 </html>
