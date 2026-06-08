@@ -95,6 +95,17 @@
         margin-bottom: 16px;
       }
       .toolbar button { width: auto; padding: 10px 18px; }
+      .toolbar-bottom {
+        margin-top: 16px;
+        display: flex;
+        justify-content: center;
+      }
+      .toolbar-bottom button {
+        width: 100%;
+        padding: 14px;
+        border-style: dashed;
+        font-size: 14px;
+      }
 
       /* Cells */
       .cells {
@@ -278,6 +289,11 @@
 
     <!-- Cells container -->
     <div id="cells" class="cells"></div>
+
+    <!-- Bottom add button -->
+    <div class="toolbar-bottom">
+      <button id="addCellBottom" class="ghost">+ Thêm prompt</button>
+    </div>
 
     <details class="tips">
       <summary>💡 Mẹo tiết kiệm token</summary>
@@ -519,7 +535,12 @@
         }
       });
 
-      $("addCell").addEventListener("click", () => createCell());
+      const addCellAndScroll = () => {
+        const c = createCell();
+        c.scrollIntoView({ behavior: "smooth", block: "center" });
+      };
+      $("addCell").addEventListener("click", addCellAndScroll);
+      $("addCellBottom").addEventListener("click", addCellAndScroll);
       $("runAll").addEventListener("click", () => {
         const cells = cellsContainer.querySelectorAll(".cell");
         cells.forEach((c) => runCell(c));
